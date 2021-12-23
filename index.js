@@ -1,4 +1,17 @@
 const inquirer = require("inquirer");
+const mysql = require('mysql2');
+
+const db = mysql.createConnection(
+    {
+      host: 'localhost',
+      // MySQL username,
+      user: 'root',
+      // MySQL password
+      password: 'Password1',
+      database: 'office_db'
+    },
+    console.log(`Connected to the classlist_db database.`)
+  );
 
 function init() {
     inquirer
@@ -8,89 +21,121 @@ function init() {
                 name: 'initialQuestion',
                 message: 'What would you like to do?',
                 choices: ['View All Employees', 'Add Employee', 'Update Employee Role', 'View All Roles', 'Add Role', 'View All Departments', 'Add Department', 'Quit']
-            },
+            }
 
-            {
-                type: 'input',
-                name: 'departmentName',
-                message: 'Please enter name of the department.',
-                when: (answers) => {
-                    answers.initialQuestion === 'Add Department'
-                }
-            },
+        ]).then(function (answers) {
+            console.log(answers)
+            switch (answers.initialQuestion) {
+                case "View All Employees":
+                    viewAllEmployees()
+                    break;
+                case "Add Employee":
+                    addEmployee()
+                    break;
+                case "Update Employee Role":
+                    updateEmployeeRole()
+                    break;
+                case "View All Roles":
+                    viewAllRoles()
+                    break;
+                case "Add Role":
+                    addRole()
+                    break;
+                case "View All Departments":
+                    viewAllDepts()
+                    break;
+                case "Add Department":
+                    addDept()
+                    break;
+                case "Quit":
+                    return
+            }
+        })
+}
 
-            {
-                type: 'input',
-                name: 'roleName',
-                message: 'Please enter name of the role.',
-                when: (answers) => {
-                    answers.initialQuestion === 'Add Role'
-                }
-            },
 
-            {
-                type: 'input',
-                name: 'roleSalary',
-                message: 'Please enter salary of this role.',
-                when: (answers) => {
-                    answers.initialQuestion === 'Add Role'
-                }
-            },
+init()
 
-            {
-                type: 'input',
-                name: 'roleDepartment',
-                message: 'Please enter department of this role.',
-                when: (answers) => {
-                    answers.initialQuestion === 'Add Role'
-                }
-            },
+function viewAllEmployees() {
+// get route to get all employees
 
-            {
-                type: 'input',
-                name: 'employeeFirstName',
-                message: 'Please enter first name of the employee.',
-                when: (answers) => {
-                    answers.initialQuestion === 'Add Employee'
-                }
-            },
+}
 
-            {
-                type: 'input',
-                name: 'employeeLastName',
-                message: 'Please enter last name of the department.',
-                when: (answers) => {
-                    answers.initialQuestion === 'Add Employee'
-                }
-            },
+function viewAllRoles() {
 
-            {
-                type: 'input',
-                name: 'employeeRole',
-                message: 'Please enter role of the employee.',
-                when: (answers) => {
-                    answers.initialQuestion === 'Add Employee'
-                }
-            },
+}
 
-            {
-                type: 'input',
-                name: 'employeeManager',
-                message: 'Please enter manager of the employee.',
-                when: (answers) => {
-                    answers.initialQuestion === 'Add Employee'
-                }
-            },
+function viewAllDepts() {
 
-            {
-                type: 'list',
-                name: 'updateEmployeeRole',
-                message: 'Which employee role would you like to update?',
-                choices: [],
-                when: (answers) => {
-                    answers.initialQuestion === 'Update Employee Role'
-                }
-            },
-            
-        ])
+}
+
+function addEmployee() {
+    inquirer.prompt([{
+        type: 'input',
+        name: 'first_name',
+        message: 'Please enter first name of the employee.',
+
+    },
+
+    {
+        type: 'input',
+        name: 'last_name',
+        message: 'Please enter last name of the employee.',
+    },
+
+    {
+        type: 'input',
+        name: 'role_id',
+        message: 'Please enter role of the employee.',
+    },
+
+    {
+        type: 'input',
+        name: 'manager_id',
+        message: 'Please enter manager of the employee.',
+    }]) .then(function(answers) {
+        console.log(answers)
+        db.promise().query('INSERT INTO employee SET ?', answers);
+        init()
+    })
+}
+
+function addRole() {
+    inquirer.prompt([{
+        type: 'input',
+        name: 'title',
+        message: 'Please enter name of the role.',
+    },
+    {
+        type: 'input',
+        name: 'salary',
+        message: 'Please enter salary of this role.',
+    },
+
+    {
+        type: 'input',
+        name: 'department_id',
+        message: 'Please enter department of this role.',
+    }]).then(function(answers) {
+        console.log(answers)
+        db.promise().query('INSERT INTO role SET ?', answers);
+        init()
+    })
+}
+
+function addDept() {
+    inquirer.prompt([{
+        type: 'input',
+        name: 'name',
+        message: 'Please enter name of the department.',
+    }]).then(function(answers) {
+        console.log(answers)
+
+        db.promise().query('INSERT INTO department SET ?', answers);
+        init()
+    })
+}
+
+function updateEmployeeRole() {
+
 }
