@@ -1,17 +1,19 @@
+require("console.table")
 const inquirer = require("inquirer");
 const mysql = require('mysql2');
+// const { listenerCount } = require("mysql2/typings/mysql/lib/Connection");
 
 const db = mysql.createConnection(
     {
-      host: 'localhost',
-      // MySQL username,
-      user: 'root',
-      // MySQL password
-      password: 'Password1',
-      database: 'office_db'
+        host: 'localhost',
+        // MySQL username,
+        user: 'root',
+        // MySQL password
+        password: 'Password1',
+        database: 'office_db'
     },
     console.log(`Connected to the classlist_db database.`)
-  );
+);
 
 function init() {
     inquirer
@@ -55,18 +57,33 @@ function init() {
 
 
 init()
+class Database {
+    // create connection to database and sql queries
+}
+async function viewAllEmployees() {
+    // get route to get all employees
+    const employees = await db.promise().query('SELECT * FROM employee')
+    console.table(employees[0])
 
-function viewAllEmployees() {
-// get route to get all employees
+    init()
 
 }
 
-function viewAllRoles() {
+async function viewAllRoles() {
+
+    const roles = await db.promise().query('SELECT * FROM role')
+    console.table(roles[0])
+
+    init()
 
 }
 
-function viewAllDepts() {
+async function viewAllDepts() {
+   
+    const departments = await db.promise().query('SELECT * FROM department')
+    console.table(departments[0])
 
+    init()
 }
 
 function addEmployee() {
@@ -93,7 +110,7 @@ function addEmployee() {
         type: 'input',
         name: 'manager_id',
         message: 'Please enter manager of the employee.',
-    }]) .then(function(answers) {
+    }]).then(function (answers) {
         console.log(answers)
         db.promise().query('INSERT INTO employee SET ?', answers);
         init()
@@ -116,7 +133,7 @@ function addRole() {
         type: 'input',
         name: 'department_id',
         message: 'Please enter department of this role.',
-    }]).then(function(answers) {
+    }]).then(function (answers) {
         console.log(answers)
         db.promise().query('INSERT INTO role SET ?', answers);
         init()
@@ -128,7 +145,7 @@ function addDept() {
         type: 'input',
         name: 'name',
         message: 'Please enter name of the department.',
-    }]).then(function(answers) {
+    }]).then(function (answers) {
         console.log(answers)
 
         db.promise().query('INSERT INTO department SET ?', answers);
@@ -136,6 +153,34 @@ function addDept() {
     })
 }
 
-function updateEmployeeRole() {
+async function updateEmployeeRole() {
+    const employees = await db.promise().query('SELECT employee.id, employee.first_name, employee.last_name FROM employee')
+    const choices = employees[0].map(employee => {
+        return {name: employee.first_name + ' ' + employee.last_name, value: employee.id}
+    })
+    const roles = await db.promise().query('SELECT role.id, role.title FROM role')
+    const roleChoices = roles[0].map(role => {
+        return {name: role.title, value: role.id}
+    })
+    inquirer.prompt([
+        {
+            type: 'list',
+            name: 'chosenEmployee',
+            message: 'Choose an employee to update',
+            choices: choices,
 
+        },
+        {
+            type: 'list',
+            name: 'chosenRole',
+            message: 'Choose new role',
+            choices: roleChoices,
+
+        }
+    ]).then(function (answers) {
+        console.log(answers)
+        db.promise().query('UPDATE employee SET role_id = ? WHERE id = ?', [answers.chosenRole, answers.chosenEmployee]);
+
+        init();
+    })
 }
