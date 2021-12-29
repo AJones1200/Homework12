@@ -1,4 +1,6 @@
 # Homework12
+https://github.com/AJones1200/Homework12
+https://watch.screencastify.com/v/QyaS62jwi4UIlJYs7rig
 
 This assignment's function is to create a dropdown menu in the terminal, 
 from which the user will be able to select the options to add employees, roles and departments. 
@@ -15,3 +17,5 @@ I created an async function to get the route to all employees, roles and departm
 I created functions with .then statements to input all employee (first name, last name, etc.), role (title, salary, etc.) and department (dept name) information. 
 I created a function with a .then statement to update the employee's role.
 I then called an init function.  
+
+PLEASE SEE "Homework12 Screenshot" FOR SCREENSHOT. I CAN'T PASTE IT ON THIS READ ME AREA. THANK YOU. 
